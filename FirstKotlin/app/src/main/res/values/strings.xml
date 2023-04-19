@@ -7,7 +7,7 @@
     <string name="random_button_next">Random</string>
     <string name="previous">Previous</string>
 
-    <string name="hello_first_fragment">Hello Kotlin</string>
+    <string name="hello_first_fragment">0</string>
     <string name="random_heading">Here is a random number between 0 and %d.</string>
     <string name="toast_button_text">Toast</string>
 

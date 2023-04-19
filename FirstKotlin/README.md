@@ -4,7 +4,7 @@
 ### 创建第一个Kotlin应用程序
 
 #### 1. 创建一个新工程
-   
+
 ![创建一个新工程](./pic/1_1.png)
 
 #### 2. 向页面添加更多的布局
@@ -147,6 +147,7 @@ fragment_first.xml布局文件代码中，找到toast_button按钮的text属性�
 ```xml
     android:background="@color/screenBackground"
 ```
+
 3.1.2 设置按钮颜色
 
 ```xml
@@ -187,7 +188,6 @@ Toast与屏幕的左边距设置为24dp，Random与屏幕的右边距设置为24
 
 在onViewCreated方法中使用绑定机制设置按钮的响应事件（创建应用程序时自带的按钮）
 
-
 ```Kotlin
 
     binding.randomButton.setOnClickListener {
@@ -201,6 +201,8 @@ Toast与屏幕的左边距设置为24dp，Random与屏幕的右边距设置为24
 
 ```
 
+![TOAST按钮添加一个toast消息](./pic/4_2.jpg)
+
 ##### 4.3 Count按钮更新屏幕的数字
 
 向Count按钮添加事件响应，更新Textview的文本显示。在FirstFragment.kt文件，为count_buttion按钮添加事件：
@@ -210,6 +212,7 @@ Toast与屏幕的左边距设置为24dp，Random与屏幕的右边距设置为24
             countMe(view)
         }
 ```
+
 countMe()为自定义方法，以View为参数，每次点击增加数字1:
 
 ```Kotlin
@@ -231,7 +234,7 @@ countMe()为自定义方法，以View为参数，每次点击增加数字1:
 
 ```xml
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/textview_random"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="R"
@@ -249,7 +252,7 @@ countMe()为自定义方法，以View为参数，每次点击增加数字1:
 
 ##### 5.2 更新显示界面文本的TextView(textview_second)
 
-```
+```xml
     <TextView
         android:id="@+id/textview_header"
         android:layout_width="match_parent"
@@ -282,14 +285,116 @@ countMe()为自定义方法，以View为参数，每次点击增加数字1:
 
 ![5.4 检查导航图](./pic/5_4.jpg)
 
-### 遇到的问题及解决
+##### 5.5 启用SafeArgs
+
+Navigation 组件具有一个名为 Safe Args 的 Gradle 插件，该插件可以生成简单的 object 和 builder 类，以便以类型安全的方式浏览和访问任何关联的参数。
+
+导入依赖：
+
+```gradle
+   implementation("androidx.navigation:navigation-fragment-ktx:2.5.0")
+   implementation("androidx.navigation:navigation-ui-ktx:2.5.0")
+```
+
+Gradle的Project部分，在plungins添加：
+
+```gradle
+    id 'androidx.navigation.safeargs.kotlin' version '2.5.0' apply false
 
 ```
+
+module部分在plugins节添加
+
+```gradle
+    id 'androidx.navigation.safeargs.kotlin'
+```
+
+##### 5.6 创建导航动作
+
+1. 打开导航视图，点击FirstFragment，查看其属性。
+
+2. 在Actions栏中可以看到导航至SecondFragment
+
+3. 同理，查看SecondFragment的属性栏
+
+4. 点击Arguments **+**符号
+
+5. 弹出的对话框中，添加参数myArg，类型为整型Integer
+
+![创建导航动作](./pic/5_6.jpg)
+
+##### 5.7FirstFragment添加代码，向SecondFragment发数据
+
+初始应用中，点击FirstFragment的Random按钮将跳转到第二个页面，但没有传递数据。在本步骤中将获取当前TextView中显示的数字并传输至SecondFragment。
+
+1. 找到onViewCreated()方法，该方法在onCreateView方法之后被调用，可以实现组件的初始化。找到Random按钮的响应代码，注释掉原先的事件处理代码实例化TextView，获取TextView中文本并转换为整数值。
+
+```kotlin
+    val showCountTextView = view.findViewById<TextView>(R.id.textview_first)
+    val currentCount = showCountTextView.text.toString().toInt()
+```
+
+2. 将currentCount作为参数传递给actionFirstFragmentToSecondFragment()
+
+```kotlin
+    val action = FirstFragmentDirections.actionFirstFragmentToSecondFragment(currentCount)
+```
+
+3. 添加导航事件代码
+
+```kotlin
+    findNavController().navigate(action)
+```
+
+##### 5.8 添加SecondFragment的代码
+
+1. 导入navArgs包
+
+```kotlin
+    import  androidx.navigation.fragment.navArgs
+```
+
+2. onViewCreated()代码之前添加一行
+
+```kotlin
+    val  args: SecondFragmentArgs by navArgs()
+```
+
+3. onViewCreated()中获取传递过来的参数列表，提取count数值，并在textview_header中显示
+
+```kotlin
+    val count = args.myArg
+    val countText = getString(R.string.random_heading,count)
+    view.findViewById<TextView>(R.id.textview_header).text = countText
+```
+
+4. 根据count值生成随机数
+
+```kotlin
+    var randomNumber = 0
+    if (count > 0){
+         randomNumber = random.nextInt(count+1)
+    }
+```
+
+5. textview_random中显示count值
+
+```kotlin
+    view.findViewById<TextView>(R.id.textview_random).text = randomNumber.toString()
+```
+
+![效果图1](./pic/Renderings1.jpg)
+![效果图2](./pic/Renderings2.jpg)
+
+### 遇到的问题及解决
+
+问题一：
+
+```gradle
 
 Duplicate class androidx.lifecycle.ViewModelLazy found in modules jetified-lifecycle-viewmodel-ktx-2.3.1-runtime (androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1) and lifecycle-viewmodel-2.4.0-runtime (androidx.lifecycle:lifecycle-viewmodel:2.4.0)
 Duplicate class androidx.lifecycle.ViewModelProviderKt found in modules jetified-lifecycle-viewmodel-ktx-2.3.1-runtime (androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1) and lifecycle-viewmodel-2.4.0-runtime (androidx.lifecycle:lifecycle-viewmodel:2.4.0)
 Duplicate class androidx.lifecycle.ViewTreeViewModelKt found in modules jetified-lifecycle-viewmodel-ktx-2.3.1-runtime (androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1) and lifecycle-viewmodel-2.4.0-runtime (androidx.lifecycle:lifecycle-viewmodel:2.4.0)
-
 ```
 
 解决：
@@ -299,7 +404,14 @@ Duplicate class androidx.lifecycle.ViewTreeViewModelKt found in modules jetified
 
 ```gradle
 implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0'
-
 ```
 
 3. 若项目中已经设置过相关依赖库版本，在build.gradle文件中找到设置的依赖库位置，更改对应的版本号即可，异常中提示更改为“2.4.0”，若你的异常提醒为其他版本，道理是一样的，改为项目提示的异常更高级版本号即可
+
+问题二：
+
+```gradle
+Too many arguments for public final fun actionFirstFragmentToSecondFragment(): NavDirections defined in com.example.firstkotlin.FirstFragmentDirections.Companion
+```
+
+解决：在5.6创建导航动作中，未添加参数。

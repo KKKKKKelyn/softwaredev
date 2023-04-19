@@ -36,19 +36,26 @@ class FirstFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.randomButton.setOnClickListener {
-            findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
-        }
-
         view.findViewById<Button>(R.id.toast_button).setOnClickListener{
             val myToast = Toast.makeText(context,"Hello Toast!",Toast.LENGTH_LONG)
-            myToast.show();
+            myToast.show()
         }
 
         view.findViewById<Button>(R.id.count_button).setOnClickListener {
             countMe(view)
         }
 
+//        val showCountTextView = view.findViewById<TextView>(R.id.textview_first)
+//        val currentCount = showCountTextView.text.toString().toInt()
+//        val action = FirstFragmentDirections.actionFirstFragmentToSecondFragment(currentCount)
+
+        binding.randomButton.setOnClickListener {
+//            findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
+            val showCountTextView = view.findViewById<TextView>(R.id.textview_first)
+            val currentCount = showCountTextView.text.toString().toInt()
+            val action = FirstFragmentDirections.actionFirstFragmentToSecondFragment(currentCount)
+            findNavController().navigate(action)
+        }
     }
     private fun countMe(view: View){
         val showCountTextView = view.findViewById<TextView>(R.id.textview_first)
