@@ -5,3 +5,5 @@
 ### [2.1 实现第一个Kotlin应用](./FirstKotlin/README.md)
 
 ### [2.2 构建CameraX应用](./CameraX/README.md)
+
+### [3 JupyterNotebook实践](./JupyterNoteBookBase/README.md)
