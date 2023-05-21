@@ -95,7 +95,6 @@ activity.main布局文件：
 package com.example.camerax
 
 import com.example.camerax.databinding.ActivityMainBinding
-
 import android.Manifest
 import android.content.ContentValues
 import android.content.pm.PackageManager
